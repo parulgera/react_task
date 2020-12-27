@@ -3,41 +3,43 @@ import axios from "axios";
 
 
 const Articles = () => {
-    const [num, setNum] = useState();
-    const [data, setData] = useState({ data: [] });
-
-    useEffect(() => {
+    const [num, setNum] = useState(1);
+    const [data, setData] = useState([]);
+    const [totalPages, setTotalPages]= useState();
     const fetchData = async () => {
       const result = await axios(
         `https://jsonmock.hackerrank.com/api/articles?page=${num}`
       );
-      setData(result.data);
+      setData(result.data.data);
+      setTotalPages(result.data.total_pages);
     };
+
+    useEffect(() => {
+    
     fetchData();
   }, [num]);
 
 return (
     <>
     <div>
-    <h1> Hacker Rank page<span> {num}</span> Articles.</h1>
-    <div><h2> Choose Page No : </h2><select value={num} onChange={(event)=> {
+      <h1> Hacker Rank page<span> {num}</span> Articles.</h1>
+      <div><h2> Choose Page No : </h2><select value={num} onChange={(event)=> {
         setNum(event.target.value);
     }}
     >
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
+    {[...new Array(totalPages)].map((_, index) => 
+       <option value={index+1}>{index+1}</option>
+)}
+    
     </select>
 </div>
 
      <div id = "container">
      
       <ul>
-        {data.data.map((articles, index) => (
+        {data.map((articles, index) => (
           <li key={index} style={{ listStyle: 'none' }}>
-                <a href={articles.url} target="target_blank">
+                <a href={articles.url} target="_blank" rel="noreferrer">
                   <h3>{articles.title}</h3>
                 </a>
             
